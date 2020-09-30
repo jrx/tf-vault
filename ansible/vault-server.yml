@@ -1,0 +1,83 @@
+---
+- name: install vault server
+  hosts: all
+  serial: 1
+  become: true
+
+  vars:
+    VAULT_VERSION: "1.5.4"
+    NODE_NAME: "Vault-Server"
+    ADDR: "127.0.0.1"
+
+  tasks:
+
+  - name: install epel-release
+    yum:
+      name: epel-release
+      state: present
+
+  - name: install common packages
+    yum:
+      name:
+        - unzip
+        - vim
+        - jq
+      state: present
+
+  - name: download binary
+    unarchive:
+      src: "https://releases.hashicorp.com/vault/{{ VAULT_VERSION }}/vault_{{ VAULT_VERSION }}_linux_amd64.zip"
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
+
+  - name: set cap_ipc_lock=+ep
+    capabilities:
+      path: /usr/local/bin/vault
+      capability: cap_ipc_lock=+ep
+      state: present
+
+  - name: Add the system user 'vault'
+    user:
+      name: vault
+      home: /etc/vault.d
+      shell: /bin/false
+      system: yes
+
+  - name: create config directory
+    file: 
+      path: /etc/vault.d/
+      state: directory
+      recurse: yes
+      owner: vault
+      group: vault
+
+  - name: create storage directory
+    file: 
+      path: /opt/raft
+      state: directory
+      recurse: yes
+      owner: vault
+      group: vault
+
+  - name: configure server
+    template:
+      src: ./files/vault-server.hcl.j2
+      dest: /etc/vault.d/server.hcl
+      mode: 0640
+      owner: vault
+      group: vault
+
+  - name: configure systemd
+    copy:
+      src: ./files/vault-server.service
+      dest: /etc/systemd/system/vault.service
+
+  - name: start vault server
+    systemd:
+      name: vault.service
+      state: restarted
+      enabled: yes
+      daemon_reload: yes

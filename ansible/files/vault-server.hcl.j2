@@ -1,0 +1,20 @@
+listener "tcp" {
+  address          = "0.0.0.0:8200"
+  cluster_address  = "{{ ADDR }}:8201"
+  tls_disable      = "true"
+}
+
+storage "raft" {
+  path = "/opt/raft"
+  node_id = "raft-{{ NODE_NAME }}"
+}
+
+api_addr =  "http://{{ ADDR }}:8200"
+cluster_addr = "https://{{ ADDR }}:8201"
+
+ui = true
+
+seal "awskms" {
+  region     = "{{ AWS_REGION }}"
+  kms_key_id = "{{ KMS_KEY }}"
+}
