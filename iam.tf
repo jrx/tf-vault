@@ -39,7 +39,7 @@ resource "aws_iam_policy" "vault-policy" {
 
 resource "aws_iam_policy_attachment" "vault-attach" {
   name       = "vault-attach"
-  roles      = ["${aws_iam_role.vault_kms_unseal_role.id}"]
+  roles      = [aws_iam_role.vault_kms_unseal_role.id]
   policy_arn = aws_iam_policy.vault-policy.arn
 }
 

@@ -17,19 +17,20 @@ variable "private_key" {
 }
 
 variable "aws_region" {
-  default = "eu-central-1"
+  default = "eu-north-1"
 }
 
 variable "aws_azs" {
   type        = list
   description = "List of the availability zones to use."
-  default     = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
+  default     = ["eu-north-1a", "eu-north-1b", "eu-north-1c"]
 }
 
 variable "amis" {
   type = map(string)
   default = {
-    eu-central-1 = "ami-337be65c" # centos 7
+    # eu-central-1 = "ami-337be65c" # centos 7
+    eu-north-1 = "ami-026f0eb2e8006617d" # centos 7
   }
 }
 
@@ -43,11 +44,11 @@ variable "num_vault" {
 }
 
 variable "vault_version" {
-  default     = "1.5.4"
+  default     = "1.6.0-rc"
   description = "Specifies which Vault version instruction to use."
 }
 
 variable "vault_instance_type" {
   description = "Vault server instance type."
-  default     = "t2.micro"
+  default     = "t3.micro"
 }

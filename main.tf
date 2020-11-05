@@ -20,7 +20,7 @@ resource "aws_instance" "vault" {
   ami                         = var.amis[var.aws_region]
   instance_type               = var.vault_instance_type
   key_name                    = var.key_name
-  vpc_security_group_ids      = ["${aws_security_group.default.id}"]
+  vpc_security_group_ids      = [aws_security_group.default.id]
   associate_public_ip_address = true
   iam_instance_profile        = aws_iam_instance_profile.vault_profile.id
   count                       = var.num_vault
@@ -43,7 +43,7 @@ resource "aws_instance" "vault" {
 
   provisioner "remote-exec" {
     inline = [
-      "cd ansible; ansible-playbook -c local -i \"localhost,\" -e 'ADDR=${self.private_ip} NODE_NAME=vault-s${count.index} VAULT_VERSION=${var.vault_version} KMS_KEY=${aws_kms_key.vault.id} AWS_REGION=${var.aws_region}' vault-server.yml",
+      "cd ansible; ansible-playbook -c local -i \"localhost,\" -e 'ADDR=${self.private_ip} NODE_NAME=vault-s${count.index} VAULT_VERSION=${var.vault_version} KMS_KEY=${aws_kms_key.vault.id} CLUSTER_NAME=${var.cluster_name} AWS_REGION=${var.aws_region}' vault-server.yml",
     ]
   }
 
@@ -58,7 +58,7 @@ resource "aws_instance" "vault" {
     Name  = "${var.cluster_name}-vault-${count.index}"
     Owner = var.owner
     # Keep = ""
-    Consul = "${var.cluster_name}"
+    Vault = var.cluster_name
   }
 }
 

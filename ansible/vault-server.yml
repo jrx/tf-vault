@@ -6,6 +6,7 @@
 
   vars:
     VAULT_VERSION: "1.5.4"
+    CLUSTER_NAME: "Vault-Cluster"
     NODE_NAME: "Vault-Server"
     ADDR: "127.0.0.1"
 

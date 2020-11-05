@@ -7,6 +7,11 @@ listener "tcp" {
 storage "raft" {
   path = "/opt/raft"
   node_id = "raft-{{ NODE_NAME }}"
+  retry_join {
+    auto_join = "provider=aws region={{ AWS_REGION }} tag_key=Vault tag_value={{ CLUSTER_NAME }}"
+    auto_join_scheme = "http"
+    auto_join_port = 8200
+  }
 }
 
 api_addr =  "http://{{ ADDR }}:8200"
