@@ -28,6 +28,17 @@ resource "aws_instance" "vault" {
   availability_zone = data.terraform_remote_state.vpc.outputs.aws_azs[count.index % length(data.terraform_remote_state.vpc.outputs.aws_azs)]
   subnet_id         = data.terraform_remote_state.vpc.outputs.aws_public_subnets[count.index % length(data.terraform_remote_state.vpc.outputs.aws_azs)]
 
+  tags = {
+    Name  = "${var.cluster_name}-vault-${count.index}"
+    Owner = var.owner
+    # Keep = ""
+    Vault = var.cluster_name
+  }
+}
+
+resource "null_resource" "ansible" {
+  count = var.num_vault
+
   provisioner "remote-exec" {
     inline = [
       "mkdir -p /home/${var.instance_username}/ansible",
@@ -43,22 +54,18 @@ resource "aws_instance" "vault" {
 
   provisioner "remote-exec" {
     inline = [
-      "cd ansible; ansible-playbook -c local -i \"localhost,\" -e 'ADDR=${self.private_ip} NODE_NAME=vault-s${count.index} VAULT_VERSION=${var.vault_version} KMS_KEY=${aws_kms_key.vault.id} CLUSTER_NAME=${var.cluster_name} AWS_REGION=${var.aws_region}' vault-server.yml",
+      "cd ansible; ansible-playbook -c local -i \"localhost,\" -e 'ADDR=${element(aws_instance.vault.*.private_ip, count.index)} NODE_NAME=vault-s${count.index} VAULT_VERSION=${var.vault_version} KMS_KEY=${aws_kms_key.vault.id} CLUSTER_NAME=${var.cluster_name} AWS_REGION=${var.aws_region}' vault-server.yml",
     ]
   }
 
   connection {
-    host        = coalesce(self.public_ip, self.private_ip)
+    host        = coalesce(element(aws_instance.vault.*.public_ip, count.index), element(aws_instance.vault.*.private_ip, count.index))
     type        = "ssh"
     user        = var.instance_username
     private_key = var.private_key
   }
 
-  tags = {
-    Name  = "${var.cluster_name}-vault-${count.index}"
-    Owner = var.owner
-    # Keep = ""
-    Vault = var.cluster_name
+  triggers = {
+    always_run = timestamp()
   }
 }
-
