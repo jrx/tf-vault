@@ -21,7 +21,7 @@ variable "aws_region" {
 }
 
 variable "aws_azs" {
-  type        = list
+  type        = list(any)
   description = "List of the availability zones to use."
   default     = ["eu-north-1a", "eu-north-1b", "eu-north-1c"]
 }
@@ -40,11 +40,11 @@ variable "instance_username" {
 
 variable "num_vault" {
   description = "Specify the amount of Vault servers. For redundancy you should have at least 3."
-  default     = 3
+  default     = 1
 }
 
 variable "vault_version" {
-  default     = "1.6.0-rc"
+  default     = "1.6.1"
   description = "Specifies which Vault version instruction to use."
 }
 

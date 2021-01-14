@@ -2,11 +2,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-terraform {
-  required_version = ">= 0.12"
-  backend "remote" {}
-}
-
 resource "aws_kms_key" "vault" {
   description             = "Vault unseal key"
   deletion_window_in_days = 10
