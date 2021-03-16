@@ -44,7 +44,7 @@ variable "num_vault" {
 }
 
 variable "vault_version" {
-  default     = "1.6.1"
+  default     = "1.6.3"
   description = "Specifies which Vault version instruction to use."
 }
 

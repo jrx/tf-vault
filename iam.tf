@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "assume_role" {
 # Vault
 
 resource "aws_iam_role" "vault_kms_unseal_role" {
-  name               = "vault-kms-role"
+  name               = "${var.cluster_name}-vault-kms-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -33,17 +33,17 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
 }
 
 resource "aws_iam_policy" "vault-policy" {
-  name   = "vault-policy"
+  name   = "${var.cluster_name}-vault-policy"
   policy = data.aws_iam_policy_document.vault-kms-unseal.json
 }
 
 resource "aws_iam_policy_attachment" "vault-attach" {
-  name       = "vault-attach"
+  name       = "${var.cluster_name}-vault-attach"
   roles      = [aws_iam_role.vault_kms_unseal_role.id]
   policy_arn = aws_iam_policy.vault-policy.arn
 }
 
 resource "aws_iam_instance_profile" "vault_profile" {
-  name = "vault_profile"
+  name = "${var.cluster_name}-vault_profile"
   role = aws_iam_role.vault_kms_unseal_role.name
 }
