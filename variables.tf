@@ -52,3 +52,8 @@ variable "vault_instance_type" {
   description = "Vault server instance type."
   default     = "t3.micro"
 }
+
+variable "vault_license" {
+  default     = ""
+  description = "Vault license string."
+}

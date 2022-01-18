@@ -6,6 +6,7 @@
 
   vars:
     VAULT_VERSION: "1.5.4"
+    VAULT_LICENSE: ""
     CLUSTER_NAME: "Vault-Cluster"
     NODE_NAME: "Vault-Server"
     ADDR: "127.0.0.1"
@@ -60,6 +61,14 @@
       path: /opt/raft
       state: directory
       recurse: yes
+      owner: vault
+      group: vault
+
+  - name: configure env file
+    template:
+      src: ./files/vault-env.conf.j2
+      dest: /etc/vault.d/env.conf
+      mode: 0640
       owner: vault
       group: vault
 
