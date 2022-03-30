@@ -12,22 +12,22 @@ resource "aws_security_group" "vault_lb" {
 
 resource "aws_security_group_rule" "vault_lb_inbound" {
   count             = var.lb_type == "application" && var.allowed_inbound_cidrs != null ? 1 : 0
-  description       = "Allow specified CIDRs access to load balancer on port 8200"
+  description       = "Allow specified CIDRs access to load balancer on port 8200-8201"
   security_group_id = aws_security_group.vault_lb[0].id
   type              = "ingress"
   from_port         = 8200
-  to_port           = 8200
+  to_port           = 8201
   protocol          = "tcp"
   cidr_blocks       = var.allowed_inbound_cidrs
 }
 
 resource "aws_security_group_rule" "vault_lb_outbound" {
   count                    = var.lb_type == "application" ? 1 : 0
-  description              = "Allow outbound traffic from load balancer to Vault nodes on port 8200"
+  description              = "Allow outbound traffic from load balancer to Vault nodes on port 8200-8201"
   security_group_id        = aws_security_group.vault_lb[0].id
   type                     = "egress"
   from_port                = 8200
-  to_port                  = 8200
+  to_port                  = 8201
   protocol                 = "tcp"
   source_security_group_id = var.vault_sg_id
 }
@@ -51,8 +51,30 @@ resource "aws_lb" "vault_lb" {
   )
 }
 
-resource "aws_lb_target_group" "vault" {
-  name        = "${var.resource_name_prefix}-vault-tg"
+resource "aws_lb_target_group" "vault_cluster" {
+  name        = "${var.resource_name_prefix}-vault-cluster-tg"
+  target_type = "instance"
+  port        = 8201
+  protocol    = local.lb_protocol
+  vpc_id      = var.vpc_id
+
+  health_check {
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
+    protocol            = "HTTP"
+    port                = 8200
+    path                = var.lb_health_check_path
+    interval            = 30
+  }
+
+  tags = merge(
+    { Name = "${var.resource_name_prefix}-vault-cluster-tg" },
+    var.common_tags,
+  )
+}
+
+resource "aws_lb_target_group" "vault_api" {
+  name        = "${var.resource_name_prefix}-vault-api-tg"
   target_type = "instance"
   port        = 8200
   protocol    = local.lb_protocol
@@ -62,18 +84,31 @@ resource "aws_lb_target_group" "vault" {
     healthy_threshold   = 3
     unhealthy_threshold = 3
     protocol            = "HTTP"
-    port                = "traffic-port"
+    port                = 8200
     path                = var.lb_health_check_path
     interval            = 30
   }
 
   tags = merge(
-    { Name = "${var.resource_name_prefix}-vault-tg" },
+    { Name = "${var.resource_name_prefix}-vault-api-tg" },
     var.common_tags,
   )
 }
 
-resource "aws_lb_listener" "vault" {
+resource "aws_lb_listener" "vault_cluster" {
+  load_balancer_arn = aws_lb.vault_lb.id
+  port              = 8201
+  protocol          = local.lb_protocol
+  ssl_policy        = local.lb_protocol == "HTTP" ? var.ssl_policy : null
+  certificate_arn   = local.lb_protocol == "HTTP" ? var.lb_certificate_arn : null
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.vault_cluster.arn
+  }
+}
+
+resource "aws_lb_listener" "vault_api" {
   load_balancer_arn = aws_lb.vault_lb.id
   port              = 8200
   protocol          = local.lb_protocol
@@ -82,6 +117,6 @@ resource "aws_lb_listener" "vault" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.vault.arn
+    target_group_arn = aws_lb_target_group.vault_api.arn
   }
 }

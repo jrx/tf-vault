@@ -14,8 +14,8 @@ storage "raft" {
   }
 }
 
-api_addr =  "http://{{ ADDR }}:8200"
-cluster_addr = "https://{{ ADDR }}:8201"
+api_addr =  "http://{{ LB_ADDR }}:8200"
+cluster_addr = "https://{{ LB_ADDR }}:8201"
 
 ui = true
 

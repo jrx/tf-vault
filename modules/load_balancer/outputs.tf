@@ -18,7 +18,12 @@ output "vault_lb_zone_id" {
   value       = aws_lb.vault_lb.zone_id
 }
 
-output "vault_target_group_arn" {
+output "vault_cluster_target_group_arn" {
   description = "Target group ARN to register Vault nodes with"
-  value       = aws_lb_target_group.vault.arn
+  value       = aws_lb_target_group.vault_cluster.arn
+}
+
+output "vault_api_target_group_arn" {
+  description = "Target group ARN to register Vault nodes with"
+  value       = aws_lb_target_group.vault_api.arn
 }
