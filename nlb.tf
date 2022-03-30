@@ -4,7 +4,7 @@ module "loadbalancer" {
   allowed_inbound_cidrs = null
   common_tags           = {}
   lb_certificate_arn    = null
-  lb_health_check_path  = "/v1/sys/health?activecode=200"
+  lb_health_check_path  = "/v1/sys/health?activecode=200&drsecondarycode=200"
   lb_subnets            = data.terraform_remote_state.vpc.outputs.aws_private_subnets
   lb_type               = "network"
   resource_name_prefix  = var.cluster_name
