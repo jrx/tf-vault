@@ -1,11 +1,11 @@
 module "loadbalancer" {
   source = "./modules/load_balancer"
 
-  allowed_inbound_cidrs = null
+  allowed_inbound_cidrs = [data.terraform_remote_state.vpc.outputs.aws_cidr]
   common_tags           = {}
   lb_certificate_arn    = null
   lb_health_check_path  = "/v1/sys/health?activecode=200&drsecondarycode=200"
-  lb_subnets            = data.terraform_remote_state.vpc.outputs.aws_private_subnets
+  lb_subnets            = data.terraform_remote_state.vpc.outputs.aws_public_subnets
   lb_type               = "network"
   resource_name_prefix  = var.cluster_name
   ssl_policy            = "ELBSecurityPolicy-TLS-1-2-2017-01"
