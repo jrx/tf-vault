@@ -49,7 +49,7 @@ resource "null_resource" "ansible" {
 
   provisioner "remote-exec" {
     inline = [
-      "cd ansible; ansible-playbook -c local -i \"localhost,\" -e 'LB_ADDR=${module.loadbalancer.vault_lb_dns_name} ADDR=${element(aws_instance.vault.*.private_ip, count.index)} NODE_NAME=vault-s${count.index} VAULT_LICENSE=${var.vault_license} VAULT_VERSION=${var.vault_version} KMS_KEY=${aws_kms_key.vault.id} CLUSTER_NAME=${var.cluster_name} AWS_REGION=${var.aws_region}' vault-server.yml",
+      "cd ansible; ansible-playbook -c local -i \"localhost,\" -e 'LB_ADDR=${module.loadbalancer.vault_lb_dns_name} ADDR=${element(aws_instance.vault.*.private_ip, count.index)} NODE_NAME=vault-s${count.index} VAULT_LICENSE=${var.vault_license} VAULT_VERSION=${var.vault_version} KMS_KEY=${aws_kms_key.vault.id} CLUSTER_NAME=${var.cluster_name} AWS_REGION=${var.aws_region} AWS_ZONE=${element(aws_instance.vault.*.availability_zone, count.index)}' vault-server.yml",
     ]
   }
 
