@@ -30,12 +30,13 @@ variable "amis" {
   type = map(string)
   default = {
     # eu-central-1 = "ami-337be65c" # centos 7
-    eu-north-1 = "ami-026f0eb2e8006617d" # centos 7
+    # eu-north-1 = "ami-026f0eb2e8006617d" # centos 7
+    eu-north-1 = "ami-03ab37ade73ce076e" # rocky linux 8
   }
 }
 
 variable "instance_username" {
-  default = "centos"
+  default = "rocky"
 }
 
 variable "num_vault" {
