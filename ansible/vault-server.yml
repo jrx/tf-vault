@@ -81,6 +81,30 @@
       owner: vault
       group: vault
 
+  - name: create tls cert file
+    copy:
+      src: ./files/vault.crt
+      dest: /etc/vault.d/vault.crt
+      mode: 0640
+      owner: vault
+      group: vault
+
+  - name: create tls key file
+    copy:
+      src: ./files/vault.key
+      dest: /etc/vault.d/vault.key
+      mode: 0640
+      owner: vault
+      group: vault
+
+  - name: create tls client ca file
+    copy:
+      src: ./files/vault.ca
+      dest: /etc/vault.d/vault.ca
+      mode: 0640
+      owner: vault
+      group: vault
+
   - name: configure systemd
     copy:
       src: ./files/vault-server.service
