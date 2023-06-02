@@ -37,8 +37,9 @@ resource "null_resource" "ansible" {
   provisioner "remote-exec" {
     inline = [
       "mkdir -p /home/${var.instance_username}/ansible",
-      "sudo yum -y install python39-pip",
-      "sudo python3.9 -m pip install ansible --quiet",
+      "sudo yum -y install python3-pip",
+      "sudo python3 -m pip install ansible --quiet",
+      #"sudo yum -y install ansible",
     ]
   }
 
