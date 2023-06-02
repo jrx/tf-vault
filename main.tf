@@ -39,7 +39,6 @@ resource "null_resource" "ansible" {
       "mkdir -p /home/${var.instance_username}/ansible",
       "sudo yum -y install python3-pip",
       "sudo python3 -m pip install ansible --quiet",
-      #"sudo yum -y install ansible",
     ]
   }
 
