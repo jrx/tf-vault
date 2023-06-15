@@ -27,6 +27,18 @@
         - jq
       state: present
 
+  - name: disable swap
+    shell: |
+      swapoff -a
+
+  - name: remove swapfile from /etc/fstab
+    mount:
+      name: "{{ item }}"
+      fstype: swap
+      state: absent
+    with_items:
+      - swap
+
   - name: download binary
     unarchive:
       src: "https://releases.hashicorp.com/vault/{{ VAULT_VERSION }}/vault_{{ VAULT_VERSION }}_linux_amd64.zip"
