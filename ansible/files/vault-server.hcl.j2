@@ -26,6 +26,7 @@ storage "raft" {
   path                      = "/opt/raft"
   node_id                   = "raft-{{ NODE_NAME }}"
   autopilot_redundancy_zone = "{{ AWS_ZONE }}"
+  autopilot_upgrade_version = "{{ VAULT_VERSION }}"
   retry_join {
     leader_tls_servername   = "vault"
     leader_ca_cert_file     = "/etc/vault.d/vault.ca"
