@@ -61,7 +61,7 @@ resource "aws_lb_target_group" "vault_cluster" {
   health_check {
     healthy_threshold   = 3
     unhealthy_threshold = 3
-    protocol            = "HTTP"
+    protocol            = "HTTPS"
     port                = 8200
     path                = var.lb_health_check_path
     interval            = 30
@@ -83,7 +83,7 @@ resource "aws_lb_target_group" "vault_api" {
   health_check {
     healthy_threshold   = 3
     unhealthy_threshold = 3
-    protocol            = "HTTP"
+    protocol            = "HTTPS"
     port                = 8200
     path                = var.lb_health_check_path
     interval            = 30
