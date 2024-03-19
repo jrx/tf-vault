@@ -46,6 +46,8 @@ log_level     = "info"
 disable_mlock = true
 
 seal "awskms" {
+  name       = "{{ AWS_REGION }}"
   region     = "{{ AWS_REGION }}"
   kms_key_id = "{{ KMS_KEY }}"
+  priority   = "1"
 }
