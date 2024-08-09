@@ -26,3 +26,10 @@ resource "aws_lb_target_group_attachment" "vault_api" {
   target_id        = element(aws_instance.vault.*.id, count.index)
   port             = 8200
 }
+
+resource "aws_lb_target_group_attachment" "vault_oidc" {
+  count            = var.num_vault
+  target_group_arn = module.loadbalancer.vault_oidc_target_group_arn
+  target_id        = element(aws_instance.vault.*.id, count.index)
+  port             = 8210
+}

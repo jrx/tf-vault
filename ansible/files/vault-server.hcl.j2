@@ -11,6 +11,12 @@ listener "tcp" {
   }
 }
 
+listener "tcp" {
+  address                  = "0.0.0.0:8210"
+  cluster_address          = "{{ ADDR }}:8201"
+  tls_disable              = "true"
+}
+
 telemetry {
   prometheus_retention_time = "24h"
   disable_hostname          = true
