@@ -22,7 +22,7 @@ resource "aws_iam_instance_profile" "vault_profile" {
   role = aws_iam_role.vault_kms_unseal_role.name
 }
 
-# Auto-unseal
+# Auto-unseal and Managed Keys
 
 data "aws_iam_policy_document" "vault-kms-unseal" {
   statement {
@@ -34,6 +34,11 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
       "kms:Encrypt",
       "kms:Decrypt",
       "kms:DescribeKey",
+      "kms:TagResource",
+      "kms:CreateKey",
+      "kms:CreateAlias",
+      "kms:Sign",
+      "kms:GetPublicKey",
       "ec2:DescribeInstances",
       "iam:GetRole",
     ]
