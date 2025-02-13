@@ -38,6 +38,7 @@ data "aws_iam_policy_document" "vault-kms-unseal" {
       "kms:CreateKey",
       "kms:CreateAlias",
       "kms:Sign",
+      "kms:Verify",
       "kms:GetPublicKey",
       "ec2:DescribeInstances",
       "iam:GetRole",
