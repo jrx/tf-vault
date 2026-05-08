@@ -14,11 +14,6 @@
 
   tasks:
 
-  - name: install epel-release
-    yum:
-      name: epel-release
-      state: present
-
   - name: install common packages
     yum:
       name:

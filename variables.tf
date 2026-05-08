@@ -32,12 +32,13 @@ variable "amis" {
     # eu-central-1 = "ami-337be65c" # centos 7
     # eu-north-1 = "ami-026f0eb2e8006617d" # centos 7
     # eu-north-1 = "ami-059464b63014a9d6a" # rocky linux 8
-    eu-north-1 = "ami-07c0f40b66e9893c4" # rocky linux 9
+    # eu-north-1 = "ami-07c0f40b66e9893c4" # rocky linux 9
+    eu-north-1 = "ami-0c4b8477135926c4f" # rhel 9
   }
 }
 
 variable "instance_username" {
-  default = "rocky"
+  default = "ec2-user"
 }
 
 variable "num_vault" {
